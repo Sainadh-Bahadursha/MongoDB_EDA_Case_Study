@@ -2,7 +2,6 @@ import importlib.metadata
 packages = [
     "pymongo",
     "pandas",
-    "python-dotenv",
     "numpy",
     "matplotlib",
     "seaborn",

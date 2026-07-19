@@ -1,0 +1,10 @@
+pymongo==4.17.0
+pandas==3.0.3
+python-dotenv==1.2.2
+numpy==2.5.1
+matplotlib==3.11.1
+seaborn==0.13.2
+notebook==7.6.0
+jupyter==1.1.1
+tqdm==4.69.0
+python-dotenv==1.2.2

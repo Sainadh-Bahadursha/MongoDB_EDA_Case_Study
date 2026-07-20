@@ -218,3 +218,5 @@ __marimo__/
 .streamlit/secrets.toml
 
 mongodb/*
+
+notebooks/homework_casestudy_answers.ipynb

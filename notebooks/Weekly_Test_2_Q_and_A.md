@@ -182,7 +182,7 @@ The `countDocuments()` method returns the total number of documents present in t
 
 # Answer
 
-MongoDB follows a hierarchical architecture to organize and manage data efficiently. At the highest level is a **MongoDB Cluster**, which consists of one or more **Nodes (Servers)**. Each node stores one or more **Databases**. A database contains multiple **Collections**, each collection stores multiple **Documents**, and every document consists of **Fields** represented as key-value pairs. MongoDB stores these documents internally in **BSON (Binary JSON)** format, allowing efficient storage and retrieval of data.
+MongoDB uses a simple hierarchy to organize data. A **cluster** contains one or more **nodes**, each node hosts **databases**, databases contain **collections**, collections store **documents**, and documents are made up of **fields**. MongoDB stores documents in **BSON (Binary JSON)**, which supports rich data types and efficient storage.
 
 ## MongoDB Architecture Hierarchy
 
@@ -208,16 +208,16 @@ graph BT
 
 | Level | Description |
 |--------|-------------|
-| **Cluster** | A cluster is the highest level of MongoDB deployment. It consists of one or more MongoDB nodes working together to provide scalability and high availability. |
-| **Node (Server)** | A node is an individual MongoDB server that stores databases and processes client requests. Multiple nodes can exist within a cluster. |
-| **Database** | A database is a logical container that groups related collections. For example, a college may have a database named **college**. |
-| **Collection** | A collection is similar to a table in a relational database. It stores multiple documents of the same category. For example, the **students** collection stores student information. |
-| **Document** | A document is a single record stored in BSON format. Each document contains related information about one entity. |
-| **Fields** | Fields are key-value pairs inside a document that store the actual data, such as student name, CGPA, and department. |
+| **Cluster** | Top-level MongoDB deployment made of one or more nodes. |
+| **Node (Server)** | A single MongoDB server inside the cluster. |
+| **Database** | Logical container for related collections. |
+| **Collection** | Group of similar documents, like a table. |
+| **Document** | One record stored in BSON format. |
+| **Fields** | Key-value pairs inside a document. |
 
 ### Example
 
-Consider a **college** database.
+For example, a **college** database may contain a **students** collection with student documents.
 
 ```text
 MongoDB Cluster
@@ -245,7 +245,7 @@ In this example:
 
 ## BSON (Binary JSON)
 
-MongoDB stores documents internally using **BSON (Binary JSON)** instead of standard JSON. BSON extends JSON by supporting additional data types such as **ObjectId, Date, Timestamp, Decimal128, Binary Data, and Regular Expressions**. Since BSON is stored in binary format, it provides efficient storage, faster traversal, and improved query performance.
+MongoDB stores data in **BSON (Binary JSON)** instead of plain JSON. BSON supports extra types such as **ObjectId, Date, Decimal128,** and **Binary Data**, so MongoDB can store and process data more efficiently.
 
 ### Example
 
@@ -269,17 +269,13 @@ In this document:
 - `cgpa` is stored as a **Double**.
 - `admission_date` is stored as a **Date** object.
 
-These specialized data types are supported by BSON but not by standard JSON. BSON therefore enables MongoDB to efficiently store and process different types of application data.
+These types are supported by BSON but not by standard JSON.
 
 ---
 
 ## ObjectId
 
-Every MongoDB document contains a unique **`_id`** field. If the user does not specify this field, MongoDB automatically generates an **ObjectId**. An ObjectId is a **12-byte unique identifier** consisting of:
-
-- **4 bytes** – Timestamp
-- **5 bytes** – Random value
-- **3 bytes** – Incrementing counter
+Every MongoDB document has a unique **`_id`** field. If it is not provided, MongoDB generates an **ObjectId**, a 12-byte identifier that usually includes a timestamp, random value, and counter.
 
 ### Example
 
@@ -291,20 +287,11 @@ Every MongoDB document contains a unique **`_id`** field. If the user does not s
 }
 ```
 
-### Explanation
-
-In this example, the `_id` field uniquely identifies the student document.
-
-For example:
-
-- Alice → `ObjectId("687c1e4d4b2d51b6b6f31c21")`
-- Bob → `ObjectId("687c1e4d4b2d51b6b6f31c22")`
-
-Even if two students have the same name, MongoDB can uniquely identify each document using the `_id` field. Since `_id` is automatically indexed, searching for documents using this field is highly efficient.
+The `_id` field uniquely identifies each document and is automatically indexed.
 
 ## Flexible Schema
 
-Unlike relational databases, MongoDB does not require every document in a collection to have the same structure. Documents in the same collection can contain different fields based on application requirements. This feature is known as a **Flexible Schema** or **Schema-less Design**.
+MongoDB has a **flexible schema**, so documents in the same collection do not need identical fields. New fields can be added when required without changing existing documents.
 
 ### Example
 
@@ -354,13 +341,13 @@ All three documents belong to the **students** collection, but they contain diff
 - Student 2 additionally stores the CGPA.
 - Student 3 stores both CGPA and technical skills.
 
-Unlike a relational database, MongoDB does not require every document to contain identical columns. New fields can be added whenever required without modifying existing documents. This flexibility makes MongoDB suitable for applications whose data structure changes over time.
+This makes MongoDB suitable for data that changes over time.
 
 ---
 
 ## Embedded Documents
 
-An **Embedded Document** stores related information inside the parent document. Embedding is useful when the related data belongs only to that document and is frequently accessed together.
+An **embedded document** stores related data inside the parent document. It is useful when the data is small and usually read together.
 
 ### Example
 
@@ -381,9 +368,7 @@ An **Embedded Document** stores related information inside the parent document. 
 
 ### Explanation
 
-In this example, the student's address is stored inside the student document.
-
-Whenever the student document is retrieved, the complete address is also retrieved in a single query. This reduces the need for joins and improves read performance.
+The address is fetched with the student in one query, which avoids joins and improves read speed.
 
 Embedded documents are suitable when:
 
@@ -395,7 +380,7 @@ Embedded documents are suitable when:
 
 ## Referencing
 
-**Referencing** stores related data in separate collections and links them using identifiers. This approach reduces data duplication and improves data consistency.
+**Referencing** stores related data in separate collections and links them using identifiers. It reduces duplication and is better when many documents share the same data.
 
 ### Example
 
@@ -438,10 +423,10 @@ Referencing is preferred when:
 
 | Feature | Embedded Documents | Referencing |
 |---------|--------------------|-------------|
-| Storage | Related data stored inside the parent document | Related data stored in separate collections |
-| Query Performance | Faster because data is retrieved in one query | May require multiple queries or `$lookup` |
+| Storage | Inside the parent document | In separate collections |
+| Query Performance | Faster for one-query reads | May need multiple queries or `$lookup` |
 | Data Duplication | Higher | Lower |
-| Best Use Case | One-to-one or one-to-few relationships | One-to-many or many-to-many relationships |
+| Best Use Case | One-to-one or one-to-few | One-to-many or many-to-many |
 | Example | Student and Address | Student and Department |
 
 ---
@@ -452,7 +437,7 @@ Referencing is preferred when:
 
 # Answer
 
-MongoDB provides several mechanisms to ensure **high availability**, **fault tolerance**, and **horizontal scalability**. **Replica Sets** improve availability by maintaining multiple copies of data, while **Sharding** distributes data across multiple servers to handle very large datasets and high workloads. These features are complemented by **MongoDB Atlas**, which offers a managed cloud platform, and **Transactions**, which ensure data consistency. Together, they enable MongoDB to build scalable and reliable distributed database systems.
+MongoDB supports both **high availability** and **horizontal scalability**. **Replica sets** keep multiple copies of the data for failover, while **sharding** splits data across servers for large-scale workloads. **MongoDB Atlas** manages deployment in the cloud, and **transactions** keep related updates consistent.
 
 ---
 
@@ -490,7 +475,7 @@ Suppose a customer transfers ₹10,000.
 2. The Primary updates the database.
 3. The updated data is replicated to both Secondary nodes.
 
-If the Primary server crashes due to hardware failure, MongoDB automatically elects one of the Secondary nodes as the new Primary. The application continues to operate with minimal interruption.
+If the Primary fails, MongoDB elects a new Primary automatically, so the application keeps running.
 
 ### Advantages of Replica Sets
 
@@ -504,7 +489,7 @@ If the Primary server crashes due to hardware failure, MongoDB automatically ele
 
 # Sharding
 
-As applications grow, a single server may not have enough storage capacity or processing power. **Sharding** addresses this problem by distributing data across multiple servers called **Shards**.
+**Sharding** distributes data across multiple servers called **shards**. It helps when a single server cannot handle the storage or traffic.
 
 Instead of storing the entire database on one machine, MongoDB divides the data into smaller partitions based on a **Shard Key**. Each shard stores only a portion of the data, allowing the system to scale horizontally.
 
@@ -546,7 +531,7 @@ Instead of storing all orders on a single server, MongoDB distributes them acros
 
 When a customer places a new order, the **mongos Router** determines the appropriate shard using the shard key and forwards the request to that shard.
 
-This distribution offers several benefits:
+This gives several benefits:
 
 - Storage capacity increases by adding more shards.
 - Write operations are distributed across multiple servers.
@@ -598,9 +583,7 @@ flowchart LR
 
 Suppose a company develops an online shopping application.
 
-Instead of purchasing servers, installing MongoDB, configuring Replica Sets, and taking backups manually, the company deploys the database on **MongoDB Atlas**.
-
-MongoDB Atlas automatically provides:
+Instead of managing servers manually, the company deploys the database on **MongoDB Atlas**, which provides:
 
 - Replica Sets for high availability.
 - Automated backups and recovery.
@@ -623,7 +606,7 @@ Thus, developers can focus on application development rather than database admin
 
 # Transactions
 
-A **Transaction** is a sequence of one or more database operations that execute as a single unit of work. Either **all operations succeed** or **all operations fail**. Transactions ensure that the database remains in a consistent state even if an error occurs during execution.
+A **transaction** is a set of operations that must succeed or fail together. This keeps data consistent even if an error occurs.
 
 ### Transaction Workflow
 
@@ -646,9 +629,7 @@ The transaction consists of two operations:
 1. Deduct ₹5,000 from Account A.
 2. Add ₹5,000 to Account B.
 
-If both operations complete successfully, MongoDB **commits** the transaction.
-
-If the system crashes after deducting money from Account A but before adding it to Account B, MongoDB **rolls back** the transaction. As a result, neither account is modified, ensuring data consistency.
+If one step fails, MongoDB rolls back the transaction so partial updates are not saved.
 
 Transactions are commonly used in banking, e-commerce, inventory management, and financial systems where multiple related operations must succeed together.
 
@@ -665,20 +646,13 @@ MongoDB supports **ACID transactions** for multi-document operations.
 | **Isolation** | Concurrent transactions do not interfere with each other. |
 | **Durability** | Once committed, data is permanently stored even after a system failure. |
 
-### Example
-
-In the bank transfer example:
-
-- **Atomicity:** Money is deducted and credited together.
-- **Consistency:** Total balance remains unchanged.
-- **Isolation:** Other users cannot see partial updates.
-- **Durability:** After commit, the transaction remains stored even if the server crashes.
+In the bank transfer example, ACID means the debit and credit happen together, the data stays valid, concurrent operations do not interfere, and committed data remains saved.
 
 ---
 
 # BASE Properties
 
-Distributed NoSQL databases often follow the **BASE** model to improve scalability and availability.
+Distributed NoSQL systems often follow the **BASE** model to improve availability and scalability.
 
 | Property | Description |
 |----------|-------------|
@@ -686,16 +660,7 @@ Distributed NoSQL databases often follow the **BASE** model to improve scalabili
 | **Soft State** | Data may change over time due to replication. |
 | **Eventual Consistency** | All replicas eventually contain the same data after synchronization. |
 
-### Example
-
-Suppose an e-commerce application updates the stock of a product.
-
-Immediately after the update:
-
-- Primary Node shows **Stock = 20**
-- Secondary Node still shows **Stock = 25**
-
-After replication completes, all nodes display **Stock = 20**. This behavior is called **Eventual Consistency**.
+For example, one node may show updated stock before another node syncs. After replication, all nodes become consistent.
 
 ---
 
